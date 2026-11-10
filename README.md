@@ -4,7 +4,7 @@ A collection of hands-on mini-projects designed to practice and implement core s
 
 ### Overview
 
-The primary goal of this repository is to move beyond pure theory and build isolated, functional scenarios where each mini-project explores a specific engineering challenge, architectural pattern, or scaling bottleneck.
+The primary goal of this repository is to move beyond pure theory and build isolated, functional scenarios where each mini-project explores a specific engineering challenge or architectural pattern.
 
 ---
 
