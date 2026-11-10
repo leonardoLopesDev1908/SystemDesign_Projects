@@ -19,5 +19,8 @@ public class Event {
     private String name;
 
     @Column
-    LocalDateTime timestamp;
+    private LocalDateTime timestamp;
+
+    @Column
+    private Long capacity;
 }

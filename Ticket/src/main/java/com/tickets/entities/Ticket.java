@@ -16,5 +16,8 @@ public class Ticket {
     private Long id;
 
     @OneToOne
+    private User user;
+
+    @OneToOne
     private Event event;
 }
