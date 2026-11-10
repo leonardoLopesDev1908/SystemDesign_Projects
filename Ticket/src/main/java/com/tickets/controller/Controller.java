@@ -2,12 +2,11 @@ package com.tickets.controller;
 
 import java.util.List;
 
+import com.tickets.controller.dto.request.BuyTicketRequest;
+import com.tickets.controller.dto.response.PurchaseProof;
+import com.tickets.service.TicketPurchaseConsumer;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.tickets.controller.dto.response.EventResponse;
 import com.tickets.service.GeneralService;
@@ -16,16 +15,18 @@ import com.tickets.service.GeneralService;
 @RequestMapping("api/events")
 public class Controller {
 
-    private GeneralService service;
+    private final GeneralService service;
+    private final TicketPurchaseConsumer purchaser;
 
-    public Controller(GeneralService service) {
+    public Controller(GeneralService service, TicketPurchaseConsumer purchaser) {
         this.service = service;
+        this.purchaser = purchaser;
     }
 
-    @PostMapping("/event/{eventId}/buy-ticket")
-    public ResponseEntity<Void> buyTicket(@PathVariable("eventId") String eventId) {
-        
-        return ResponseEntity.ok().body(null);
+    @PostMapping("/event/buy-ticket")
+    public ResponseEntity<PurchaseProof> buyTicket(@RequestBody BuyTicketRequest buyRequest) {
+        PurchaseProof proof = purchaser.processPurchase(buyRequest);
+        return ResponseEntity.ok().body(proof);
     }
 
     @GetMapping()
@@ -35,5 +36,4 @@ public class Controller {
             .toList();
         return ResponseEntity.ok().body(events);
     }
-
 }
