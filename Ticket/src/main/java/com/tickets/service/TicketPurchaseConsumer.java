@@ -40,7 +40,6 @@ public class TicketPurchaseConsumer {
         this.eventRepository = eventRepository;
     }
 
-    @RabbitListener(queues = "ticket-purchase-queue")
     public PurchaseProof processPurchase(BuyTicketRequest dto) {
         String lockKey = "lock:ticket:" + dto.eventId();
         String lockValue = redisLock.acquiredLock(lockKey, DEFAULT_TIMEOUT);

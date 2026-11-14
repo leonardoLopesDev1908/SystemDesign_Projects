@@ -41,6 +41,6 @@ public class RedisDistributedLock {
                 uniqueToken
         );
 
-        return result != null && result > 0;
+        return result != null &&     result > 0;
     }
 }

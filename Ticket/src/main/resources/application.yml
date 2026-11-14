@@ -1,0 +1,43 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: tickets-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${POSTGRES_DATABASE}
+    username: ${POSTGRES_USERNAME}
+    password: ${POSTGRES_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: ${REDIS_PASSWORD}
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBIT_USERNAME}
+    password: ${RABBIT_PASSWORD}
+
+  mail:
+    host: smtp.example.com
+    port: 587
+    username: your-username
+    password: your-password
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
