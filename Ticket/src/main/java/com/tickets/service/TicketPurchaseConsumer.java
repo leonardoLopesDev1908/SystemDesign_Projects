@@ -1,12 +1,12 @@
 package com.tickets.service;
 
 import java.time.Duration;
-import java.util.UUID;
 
 import com.tickets.Utils.RedisDistributedLock;
+import com.tickets.config.RabbitQueue;
 import com.tickets.controller.dto.response.PurchaseProof;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.data.redis.core.RedisTemplate;
+
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.tickets.controller.dto.request.BuyTicketRequest;
@@ -22,22 +22,44 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class TicketPurchaseConsumer {
 
+    //JUST FOR TESTS
+    private static final String EMAIL_TO = "leonardosilvalls1908@gmail.com";
+    private static final String EMAIL_MESSAGE = 
+    """
+        Hello, [username]!
+
+        We're happy to let you know that the purchase of your ticket to the event [eventname]
+        at [eventdate] has been CONFIRMED! 
+
+        Have a good event!
+
+        Your ticket number is [ticketid].
+    """;
+
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
 
-    private final RedisDistributedLock redisLock;
     private final EventRepository eventRepository;
     private final TicketRepository ticketRepository;
     private final UserRepository userRepository;
 
+    private final RedisDistributedLock redisLock;
+    
+    private final RabbitTemplate rabbitTemplate;
+    private final EmailSender emailSender;
+
     public TicketPurchaseConsumer(RedisDistributedLock redisLock,
                                   TicketRepository ticketRepository,
                                   UserRepository userRepository,
-                                  EventRepository eventRepository
+                                  EventRepository eventRepository,
+                                  EmailSender emailSender,
+                                  RabbitTemplate rabbitTemplate
                                 ) {
         this.redisLock = redisLock;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
+        this.emailSender = emailSender;
+        this.rabbitTemplate = rabbitTemplate;
     }
 
     public PurchaseProof processPurchase(BuyTicketRequest dto) {
@@ -67,6 +89,11 @@ public class TicketPurchaseConsumer {
                 Ticket savedTicket = ticketRepository.save(newTicket);
 
                 System.out.println("Sucesso! Ingresso gerado e comprado para: " + user.getName());
+                
+                emailSender.sendPlainText(EMAIL_TO, "Purchase Ticket Confirmation", EMAIL_MESSAGE);
+
+                rabbitTemplate.convertAndSend(RabbitQueue.EXCHANGE_NAME, RabbitQueue.ROUTING_KEY);
+                
                 return PurchaseProof.fromTicket(savedTicket);
             } finally {
                 redisLock.releaseLock(lockKey, lockValue);
