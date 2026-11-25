@@ -5,7 +5,7 @@ import java.time.Duration;
 import com.tickets.Utils.RedisDistributedLock;
 import com.tickets.config.RabbitQueue;
 import com.tickets.controller.dto.response.PurchaseProof;
-
+import com.tickets.service.payload.EmailPayload;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -22,18 +22,16 @@ import jakarta.persistence.EntityNotFoundException;
 @Service
 public class TicketPurchaseConsumer {
 
-    //JUST FOR TESTS
-    private static final String EMAIL_TO = "leonardosilvalls1908@gmail.com";
-    private static final String EMAIL_MESSAGE = 
+    private static final String EMAIL_MESSAGE =
     """
-        Hello, [username]!
-
-        We're happy to let you know that the purchase of your ticket to the event [eventname]
-        at [eventdate] has been CONFIRMED!
-
-        Have a good event!
-
-        Your ticket number is [ticketid].
+                Hello, [username]!
+    
+                We're happy to let you know that the purchase of your ticket to the event [eventname]
+                at [eventdate] has been CONFIRMED!
+    
+                Have a good event!
+    
+                Your ticket number is [ticketid].
     """;
 
     private static final Duration DEFAULT_TIMEOUT = Duration.ofSeconds(10);
@@ -44,22 +42,19 @@ public class TicketPurchaseConsumer {
 
     private final RedisDistributedLock redisLock;
     
-    private final RabbitTemplate rabbitTemplate;
-    private final EmailSender emailSender;
+    private final EmailProducer emailProducer;
 
     public TicketPurchaseConsumer(RedisDistributedLock redisLock,
                                   TicketRepository ticketRepository,
                                   UserRepository userRepository,
                                   EventRepository eventRepository,
-                                  EmailSender emailSender,
-                                  RabbitTemplate rabbitTemplate
+                                  EmailProducer producer
                                 ) {
         this.redisLock = redisLock;
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
         this.eventRepository = eventRepository;
-        this.emailSender = emailSender;
-        this.rabbitTemplate = rabbitTemplate;
+        this.emailProducer = producer;
     }
 
     public PurchaseProof processPurchase(BuyTicketRequest dto) {
@@ -87,10 +82,8 @@ public class TicketPurchaseConsumer {
                 Ticket savedTicket = ticketRepository.save(newTicket);
 
                 System.out.println("Sucesso! Ingresso gerado e comprado para: " + user.getName());
-                
-                emailSender.sendPlainText(EMAIL_TO, "Purchase Ticket Confirmation", EMAIL_MESSAGE);
 
-                rabbitTemplate.convertAndSend(RabbitQueue.EXCHANGE_NAME, RabbitQueue.ROUTING_KEY);
+                emailProducer.queueEmail(EMAIL_MESSAGE);
                 
                 return PurchaseProof.fromTicket(savedTicket);
             } finally {
