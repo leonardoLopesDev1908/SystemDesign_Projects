@@ -15,11 +15,11 @@ public class RedisDistributedLock {
 
     private static final String LUA_SCRIPT =
         """
-        IF redis.call("GET", KEYS[1]) == ARGV[1] THEN
+        if redis.call("GET", KEYS[1]) == ARGV[1] then   
             return redis.call("DEL", KEYS[1])
-        ELSE
+        else
             return 0
-        END
+        end
         """;
 
     public RedisDistributedLock(StringRedisTemplate redisTemplate){

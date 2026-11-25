@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitQueue {
 
-    public static final String QUEUE_NAME = "emailQueue";
+    public static final String QUEUE_NAME = "email_queue";
     public static final String EXCHANGE_NAME = "emailExchange";
     public static final String ROUTING_KEY = "emailRoutingKey";
 

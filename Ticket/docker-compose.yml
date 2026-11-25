@@ -31,7 +31,7 @@ services:
         restart: always
         ports:
             - "5672:5672"
-            - "15672:15672"
+            - "16000:16000"
 
         environment:
             RABBITMQ_DEFAULT_USER: ${RABBIT_USERNAME}

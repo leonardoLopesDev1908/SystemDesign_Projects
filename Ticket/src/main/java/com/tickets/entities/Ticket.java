@@ -16,6 +16,6 @@ public class Ticket {
     @OneToOne
     private User user;
 
-    @OneToOne
+    @ManyToOne
     private Event event;
 }

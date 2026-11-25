@@ -30,6 +30,7 @@ public class Seed {
         this.ticketRepository = ticketRepository;
         this.userRepository = userRepository;
     }
+
     @Bean
     CommandLineRunner completeInitDatabase(EventRepository repository) {
         return args -> {
@@ -42,14 +43,14 @@ public class Seed {
             userRepository.saveAll(List.of(user1, user2));
 
             Event event1 = new Event();
-            event1.setId(1L);
             event1.setName("Conferência de Tecnologia 2026");
             event1.setTimestamp(LocalDateTime.of(2026, 12, 10, 19, 0));
+            event1.setCapacity(2000L);
 
             Event event2 = new Event();
-            event2.setId(2L);
             event2.setName("Workshop de Java & Spring Boot");
             event2.setTimestamp(LocalDateTime.of(2026, 11, 20, 14, 30));
+            event2.setCapacity(1000L);
 
             eventRepository.saveAll(List.of(event1, event2));
 
@@ -59,7 +60,7 @@ public class Seed {
             Ticket ticket2 = new Ticket();
             ticket2.setEvent(event2);
 
-            ticketRepository.saveAll(List.of(ticket1, ticket2)); 
+            ticketRepository.saveAll(List.of(ticket1, ticket2));
         };
     }
 }

@@ -14,7 +14,7 @@ public class EmailSender {
         this.mailSender = mailSender;
     }
 
-    @RabbitListener(queues = "email-sender")
+    @RabbitListener(queues = "email_queue")
     public void sendPlainText(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);

@@ -12,7 +12,7 @@ import com.tickets.controller.dto.response.EventResponse;
 import com.tickets.service.GeneralService;
 
 @RestController
-@RequestMapping("api/events")
+@RequestMapping("/api/events")
 public class Controller {
 
     private final GeneralService service;

@@ -29,7 +29,7 @@ public class TicketPurchaseConsumer {
         Hello, [username]!
 
         We're happy to let you know that the purchase of your ticket to the event [eventname]
-        at [eventdate] has been CONFIRMED! 
+        at [eventdate] has been CONFIRMED!
 
         Have a good event!
 
@@ -68,9 +68,7 @@ public class TicketPurchaseConsumer {
 
         if (lockValue != null) {
             try {
-                Event event = eventRepository.findById(dto.eventId()).orElseThrow(() -> {
-                    throw new EntityNotFoundException("Evento não encontrado.");
-                });
+                Event event = eventRepository.findById(dto.eventId()).orElseThrow(EntityNotFoundException::new);
 
                 User user = userRepository.findById(dto.userId())
                         .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
