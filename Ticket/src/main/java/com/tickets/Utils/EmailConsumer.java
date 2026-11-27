@@ -1,7 +1,7 @@
-package com.tickets.service;
+package com.tickets.Utils;
 
 import com.tickets.config.RabbitQueue;
-import com.tickets.service.payload.EmailPayload;
+import com.tickets.Utils.payload.EmailPayload;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;

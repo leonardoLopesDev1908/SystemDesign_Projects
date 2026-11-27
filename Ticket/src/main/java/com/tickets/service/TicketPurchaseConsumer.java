@@ -2,11 +2,9 @@ package com.tickets.service;
 
 import java.time.Duration;
 
+import com.tickets.Utils.EmailProducer;
 import com.tickets.Utils.RedisDistributedLock;
-import com.tickets.config.RabbitQueue;
 import com.tickets.controller.dto.response.PurchaseProof;
-import com.tickets.service.payload.EmailPayload;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import com.tickets.controller.dto.request.BuyTicketRequest;

@@ -1,4 +1,4 @@
-package com.tickets.service.payload;
+package com.tickets.Utils.payload;
 
 import lombok.Getter;
 
